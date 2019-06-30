@@ -9,3 +9,5 @@ Usage:
 * Press "Start fix" button
 
 If fix was successfull, you will see message "fixed: <filepath>", otherwise text of the message will be "failed: <filepath>". Any troubles can be watched through console error messages.
+  
+All processed files will be placed in selected foulder, in new foulder "updated_subs".
