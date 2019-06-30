@@ -18,6 +18,11 @@ void SubtitlesFixer::setCodec(const QString &codecName, bool bom)
 
 bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath, const SubtitlesFixData &fixData)
 {
+    //! Clear previous data
+    _header.clear();
+    _fileData.clear();
+
+    //! Update fix data
     _fixData = fixData;
 
     try
