@@ -37,14 +37,7 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath, c
         readHeader( currentRow );
         ++currentRow;
 
-        //! Processing all data block until we hit empty row
-        //! (in additional providing checking end of data)
-        while(  ( currentRow < _fileData.length() )
-             && !_fileData[ currentRow ].trimmed().isEmpty() )
-        {
-            processRow( currentRow );
-            ++currentRow;
-        }
+        processStyleData( currentRow );
 
         //! Saving result file
         //! (overwriting existing file was failed in tests, so it's recomended to save in new file)
@@ -120,6 +113,14 @@ int SubtitlesFixer::getStartOfTheStyleGroupIndex() const
         }
     }
 
+    qCritical() << "Style position detection failed. Printing all processed data and compare operations";
+    for( int i = 0; i < _fileData.length(); ++i )
+    {
+        //! Searching group name substring
+        //! and also checking that's it not in the end of file
+        qCritical() << "failed row: " << _fileData[ i ].trimmed();
+    }
+
     //! If we pass through all file lines and not found any signs of style block, throws exception
     throw SettingsGroupNotFoundException();
 }
@@ -141,6 +142,12 @@ void SubtitlesFixer::readHeader(int headerIndex)
 
 void SubtitlesFixer::processRow(int rowIndex)
 {
+    //! If we receive empty string, just skip it
+    if( _fileData[ rowIndex ].trimmed().isEmpty() )
+    {
+        return;
+    }
+
     //! Copying source row
     QString rowStr( _fileData[ rowIndex ] );
 
@@ -183,6 +190,32 @@ void SubtitlesFixer::updateFontname(QStringList &row)
     }
 
     row[ columnIndex ] = _fixData.getNewFontName().value;
+}
+
+bool SubtitlesFixer::isBlockDeclaration(QString str)
+{
+    str = str.trimmed();
+    return   ( str.front() == '[' )
+          && ( str.back()  == ']' );
+}
+
+void SubtitlesFixer::processStyleData(int index)
+{
+    //! Processing all data block until we hit new block
+    //! (in additional providing checking end of data)
+    try
+    {
+        while(  ( index < _fileData.length() )
+             && ( !isBlockDeclaration( _fileData[ index ] ) ))
+        {
+            processRow( index );
+            ++index;
+        }
+    }
+    catch(...)
+    {
+        throw;
+    }
 }
 
 void SubtitlesFixer::updateFontsize(QStringList &row)

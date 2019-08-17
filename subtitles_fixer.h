@@ -14,7 +14,7 @@ template< typename T >
  */
 class FixField
 {
-//! Public embers
+//! Public members
 public:
     bool enabled;
     T value;
@@ -160,6 +160,19 @@ private:
      * @param row - reference to processed row.
      */
     void updateFontname( QStringList &row );
+
+    /**
+     * @brief Checks if passed row is a declaration of settings block (like [Example])
+     * @param str - checked row
+     * @return true if str is settings block declaration
+     */
+    bool isBlockDeclaration(QString str );
+
+    /**
+     * @brief Process all data in style block, replaces fontnames and fontsizes
+     * @param index - index of the start data
+     */
+    void processStyleData( int index );
 
 //! Private members
 private:
