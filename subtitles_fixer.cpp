@@ -1,7 +1,10 @@
 #include "subtitles_fixer.h"
 
 #include <QDebug>
-#include <QRegExp>
+#include <QFile>
+#include <QRegularExpression>
+#include <QTextCodec>
+#include <QTextStream>
 
 #include "subtitle_fixer_exceptions.h"
 
@@ -88,12 +91,13 @@ void SubtitlesFixer::saveFile(const QString &filepath)
         throw OpenningFileErrorException();
     }
 
+    QTextCodec *codec = QTextCodec::codecForName( _codec.toStdString().c_str() );
+    QTextDecoder *decoder = codec->makeDecoder();
     QTextStream out( &outFile );
-    out.setCodec( _codec.toStdString().c_str() );
     out.setGenerateByteOrderMark( _hasBom );
     foreach( const QString &row, _fileData )
     {
-        out << row;
+        out << decoder->toUnicode(row.toStdString().c_str());
     }
 
     outFile.close();
@@ -134,7 +138,7 @@ void SubtitlesFixer::readHeader(int headerIndex)
     headerRow.remove( 0, 8 );
 
     //! Removing all whitespacing
-    headerRow.remove( QRegExp( "\\s" ) );
+    headerRow.remove( QRegularExpression( "\\s" ) );
 
     //! Receiving list of header elements
     _header = headerRow.split( "," );
@@ -195,7 +199,8 @@ void SubtitlesFixer::updateFontname(QStringList &row)
 bool SubtitlesFixer::isBlockDeclaration(QString str)
 {
     str = str.trimmed();
-    return   ( str.front() == '[' )
+    return   (str.isEmpty() == false)
+          && ( str.front() == '[' )
           && ( str.back()  == ']' );
 }
 
