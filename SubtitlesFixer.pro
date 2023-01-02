@@ -30,6 +30,7 @@ SOURCES += \
 INCLUDEPATH += include
 
 HEADERS += \
+    include/codec_settings.h \
     include/option.h \
     include/settings.h \
     include\subtitles_fixer_mainwindow.h \
