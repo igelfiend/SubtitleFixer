@@ -30,7 +30,6 @@ public:
      * @brief Function for updating subtitle file using update data.
      * @param filepath - path for subtitle file.
      * @param filepath - path for saving result file.
-     * @param settings - contain fields with required data for update
      * @exception NoSuchFileException - throws when file by filepath doesn't exists.
      * @exception SettingsGroupNotFoundException - throws when settings group not found.
      */
