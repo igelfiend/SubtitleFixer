@@ -23,9 +23,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    src\main.cpp \
-    src\subtitles_fixer_mainwindow.cpp \
-    src\subtitles_fixer.cpp
+    src/main.cpp \
+    src/subtitles_fixer_mainwindow.cpp \
+    src/subtitles_fixer.cpp
 
 INCLUDEPATH += include
 
@@ -33,9 +33,9 @@ HEADERS += \
     include/codec_settings.h \
     include/option.h \
     include/settings.h \
-    include\subtitles_fixer_mainwindow.h \
-    include\subtitles_fixer_exceptions.h \
-    include\subtitles_fixer.h
+    include/subtitles_fixer_mainwindow.h \
+    include/subtitles_fixer_exceptions.h \
+    include/subtitles_fixer.h
 
 
 FORMS += \
