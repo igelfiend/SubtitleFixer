@@ -65,7 +65,7 @@ void SubtitlesFixer::readFile(const QString &filepath)
         emit signalError(error);
         qCritical() << error;
 
-        throw NoSuchFileException();
+        throw FileNotFoundException();
     }
 
     if( !file.open( QIODevice::ReadOnly | QFile::Text ) )
@@ -74,7 +74,7 @@ void SubtitlesFixer::readFile(const QString &filepath)
         emit signalError(error);
         qCritical() << error;
 
-        throw OpenningFileErrorException();
+        throw OpenFileErrorException();
     }
 
     while( !file.atEnd() )
@@ -98,7 +98,7 @@ void SubtitlesFixer::saveFile(const QString &filepath)
         emit signalError(*errorStream.string());
         qCritical() << errorStream.string();
 
-        throw OpenningFileErrorException();
+        throw OpenFileErrorException();
     }
 
     const std::string codecName = _settings.getCodecSettings().value.codecName.toStdString();

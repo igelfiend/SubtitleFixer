@@ -4,16 +4,16 @@
 #include <stdexcept>
 #include <string>
 
-class NoSuchFileException: public std::runtime_error
+class FileNotFoundException: public std::runtime_error
 {
 public:
-    NoSuchFileException(): std::runtime_error( "File with such name not found" ) { }
+    FileNotFoundException(): std::runtime_error( "File with such name not found" ) { }
 };
 
-class OpenningFileErrorException: public std::runtime_error
+class OpenFileErrorException: public std::runtime_error
 {
 public:
-    OpenningFileErrorException(): std::runtime_error( "Failed while openning file" ) { }
+    OpenFileErrorException(): std::runtime_error( "Failed while openning file" ) { }
 };
 
 class SettingsGroupNotFoundException: public std::runtime_error
