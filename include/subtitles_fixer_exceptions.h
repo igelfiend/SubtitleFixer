@@ -1,5 +1,5 @@
-#ifndef SUBTITLE_FIXER_EXCEPTIONS_H
-#define SUBTITLE_FIXER_EXCEPTIONS_H
+#ifndef SUBTITLES_FIXER_EXCEPTIONS_H
+#define SUBTITLES_FIXER_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif // SUBTITLE_FIXER_EXCEPTIONS_H
+#endif // SUBTITLES_FIXER_EXCEPTIONS_H

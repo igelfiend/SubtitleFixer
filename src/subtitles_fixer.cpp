@@ -6,7 +6,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 
-#include "subtitle_fixer_exceptions.h"
+#include "subtitles_fixer_exceptions.h"
 
 SubtitlesFixer::SubtitlesFixer()
     : _codec( "UTF-8" )
@@ -19,14 +19,14 @@ void SubtitlesFixer::setCodec(const QString &codecName, bool bom)
     _hasBom = bom;
 }
 
-bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath, const SubtitlesFixData &fixData)
+bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath, const Settings &settings)
 {
     //! Clear previous data
     _header.clear();
     _fileData.clear();
 
     //! Update fix data
-    _fixData = fixData;
+    _settings = settings;
 
     try
     {
@@ -182,7 +182,7 @@ void SubtitlesFixer::processRow(int rowIndex)
 
 void SubtitlesFixer::updateFontname(QStringList &row)
 {
-    if( !_fixData.getNewFontName().enabled )
+    if( !_settings.getNewFontName().enabled )
     {
         return;
     }
@@ -193,7 +193,7 @@ void SubtitlesFixer::updateFontname(QStringList &row)
         throw ColumnNotFoundException( "Fontname column in header not found" );
     }
 
-    row[ columnIndex ] = _fixData.getNewFontName().value;
+    row[ columnIndex ] = _settings.getNewFontName().value;
 }
 
 bool SubtitlesFixer::isBlockDeclaration(QString str)
@@ -225,7 +225,7 @@ void SubtitlesFixer::processStyleData(int index)
 
 void SubtitlesFixer::updateFontsize(QStringList &row)
 {
-    if( !_fixData.getIncreaseFontSize().enabled )
+    if( !_settings.getIncreaseFontSize().enabled )
     {
         return;
     }
@@ -250,5 +250,5 @@ void SubtitlesFixer::updateFontsize(QStringList &row)
     }
 
     //! Updating with new font size
-    row[ columnIndex ] = QString::number( newFont + _fixData.getIncreaseFontSize().value );
+    row[ columnIndex ] = QString::number( newFont + _settings.getIncreaseFontSize().value );
 }

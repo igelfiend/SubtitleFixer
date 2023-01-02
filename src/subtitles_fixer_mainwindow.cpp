@@ -11,7 +11,7 @@
 #include <QVariant>
 #include <QCloseEvent>
 
-#include "subtitle_fixer_exceptions.h"
+#include "subtitles_fixer_exceptions.h"
 #include "subtitles_fixer.h"
 
 SubtitlesFixerMainWindow::SubtitlesFixerMainWindow(QWidget *parent)
@@ -104,7 +104,7 @@ void SubtitlesFixerMainWindow::on_pushButtonStart_clicked()
     fixer.setCodec( ui->comboBoxCodecs->currentText(), ui->checkBoxBomUsage->isChecked() );
 
     //! SubtitlesFixData is data struct for storing update configuration
-    SubtitlesFixData fixData;
+    Settings fixData;
 
     if( ui->checkBoxFontsize->isChecked() )
     {
