@@ -2,18 +2,14 @@
 
 template< typename T >
 /**
- * @brief The FixField class contains 2 fields:
- *      - value with field value;
- *      - enabled flag, used in process functions.
+ * @brief Option template class store both value and enable/disable flag
  */
 class Option
 {
-//! Public members
 public:
     bool enabled;
     T value;
 
-//! Public methods
 public:
     Option()
         : enabled( false )
