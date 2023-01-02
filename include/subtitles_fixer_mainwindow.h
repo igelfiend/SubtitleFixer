@@ -5,6 +5,8 @@
 #include <QString>
 #include <QSettings>
 
+#include "settings.h"
+
 class QCloseEvent;
 
 namespace Ui {
@@ -27,6 +29,8 @@ private slots:
     void on_pushButtonStart_clicked();
 
 private:
+    Settings getFixerSettings() const;
+
     Ui::SubtitlesFixerMainWindow *ui;
     QSettings *_settings;
 };

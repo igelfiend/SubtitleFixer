@@ -11,7 +11,6 @@
 #include <QVariant>
 #include <QCloseEvent>
 
-#include "subtitles_fixer_exceptions.h"
 #include "subtitles_fixer.h"
 
 SubtitlesFixerMainWindow::SubtitlesFixerMainWindow(QWidget *parent)
@@ -98,30 +97,16 @@ void SubtitlesFixerMainWindow::on_pushButtonStart_clicked()
         saveDir.mkpath( "." );
     }
 
-    //! Fixer is object for updating subtitle files
     SubtitlesFixer fixer;
-    //! Configurating codec (used for saving)
-    fixer.setCodec( ui->comboBoxCodecs->currentText(), ui->checkBoxBomUsage->isChecked() );
 
-    //! SubtitlesFixData is data struct for storing update configuration
-    Settings fixData;
-
-    if( ui->checkBoxFontsize->isChecked() )
-    {
-        fixData.setIncreaseFontSize( ui->spinBoxIncreaseSize->value() );
-    }
-
-    if( ui->checkBoxFontName->isChecked() )
-    {
-        fixData.setNewFontName( ui->fontComboBox->currentFont().family() );
-    }
+    const Settings settings = getFixerSettings();
 
     foreach( const QString &filename, files )
     {
         QString fullpath = foulderPath + "/" + filename;
         QString savepath = saveDirPath + "/" + filename;
 
-        if( fixer.fixFile( fullpath, savepath, fixData ) )
+        if( fixer.fixFile( fullpath, savepath ) )
         {
             ui->textEdit->append( QString( "fixed:  %1" ).arg( filename ) );
         }
@@ -130,4 +115,25 @@ void SubtitlesFixerMainWindow::on_pushButtonStart_clicked()
             ui->textEdit->append( QString( "failed: %1" ).arg( filename ) );
         }
     }
+}
+
+Settings SubtitlesFixerMainWindow::getFixerSettings() const
+{
+    Settings settings;
+
+    settings.setCodecSettings(
+        CodecSettings{
+            ui->comboBoxCodecs->currentText(),
+            ui->checkBoxBomUsage->isChecked()});
+    if( ui->checkBoxFontsize->isChecked() )
+    {
+        settings.setIncreaseFontSize( ui->spinBoxIncreaseSize->value() );
+    }
+
+    if( ui->checkBoxFontName->isChecked() )
+    {
+        settings.setNewFontName( ui->fontComboBox->currentFont().family() );
+    }
+
+    return settings;
 }

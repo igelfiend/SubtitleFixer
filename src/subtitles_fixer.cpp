@@ -13,20 +13,16 @@ SubtitlesFixer::SubtitlesFixer()
     , _hasBom( false )
 { }
 
-void SubtitlesFixer::setCodec(const QString &codecName, bool bom)
+void SubtitlesFixer::setSettings(const Settings &settings)
 {
-    _codec = codecName;
-    _hasBom = bom;
+    _settings = settings;
 }
 
-bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath, const Settings &settings)
+bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
 {
     //! Clear previous data
     _header.clear();
     _fileData.clear();
-
-    //! Update fix data
-    _settings = settings;
 
     try
     {
@@ -91,10 +87,12 @@ void SubtitlesFixer::saveFile(const QString &filepath)
         throw OpenningFileErrorException();
     }
 
-    QTextCodec *codec = QTextCodec::codecForName( _codec.toStdString().c_str() );
+    const std::string codecName = _settings.getCodecSettings().value.codecName.toStdString();
+    bool codecHasBom = _settings.getCodecSettings().value.hasBom;
+    QTextCodec *codec = QTextCodec::codecForName( codecName.c_str() );
     QTextDecoder *decoder = codec->makeDecoder();
     QTextStream out( &outFile );
-    out.setGenerateByteOrderMark( _hasBom );
+    out.setGenerateByteOrderMark( codecHasBom );
     foreach( const QString &row, _fileData )
     {
         out << decoder->toUnicode(row.toStdString().c_str());

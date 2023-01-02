@@ -22,12 +22,7 @@ class SubtitlesFixer
 public:
     SubtitlesFixer();
 
-    /**
-     * @brief Sets string name of codec. Used in file saving.
-     * @param codecName - string name of the codec.
-     * @param bom - stands True when BOM used.
-     */
-    void setCodec( const QString &codecName, bool bom = true );
+    void setSettings( const Settings &settings );
 
     /**
      * @brief Function for updating subtitle file using update data.
@@ -37,7 +32,7 @@ public:
      * @exception NoSuchFileException - throws when file by filepath doesn't exists.
      * @exception SettingsGroupNotFoundException - throws when settings group not found.
      */
-    bool fixFile( const QString &filepath, const QString &savepath, const Settings &settings );
+    bool fixFile( const QString &filepath, const QString &savepath);
 
 //! Private functions
 private:
@@ -108,7 +103,7 @@ private:
     bool    _hasBom;            ///< BOM Codec flag for saving
     QStringList _header;        ///< List of queued style-block header titles
     QStringList _fileData;      ///< All-readed data from file
-    Settings _settings;  ///< Struct used for updating data in subtitle file
+    Settings _settings;
 };
 
 #endif // SUBTITLES_FIXER_H
