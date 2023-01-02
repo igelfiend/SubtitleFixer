@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QMap>
+#include <QObject>
 #include <QList>
 #include <QPair>
 
@@ -16,11 +17,12 @@
  * Important: Not recommended to rewrite source sub files with new one,
  * In test stage that way was failed with owner right.
  */
-class SubtitlesFixer
+class SubtitlesFixer: public QObject
 {
+    Q_OBJECT
 //! Public functions
 public:
-    SubtitlesFixer();
+    explicit SubtitlesFixer(QObject *parent = nullptr);
 
     void setSettings( const Settings &settings );
 
@@ -34,7 +36,10 @@ public:
      */
     bool fixFile( const QString &filepath, const QString &savepath);
 
-//! Private functions
+signals:
+    void signalLog(QString);
+    void signalError(QString);
+
 private:
     /**
      * @brief Reads subtitle file.
@@ -99,8 +104,6 @@ private:
 
 //! Private members
 private:
-    QString _codec;             ///< String representation of codec for saving
-    bool    _hasBom;            ///< BOM Codec flag for saving
     QStringList _header;        ///< List of queued style-block header titles
     QStringList _fileData;      ///< All-readed data from file
     Settings _settings;

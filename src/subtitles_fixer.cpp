@@ -8,9 +8,8 @@
 
 #include "subtitles_fixer_exceptions.h"
 
-SubtitlesFixer::SubtitlesFixer()
-    : _codec( "UTF-8" )
-    , _hasBom( false )
+SubtitlesFixer::SubtitlesFixer(QObject *parent)
+    : QObject(parent)
 { }
 
 void SubtitlesFixer::setSettings(const Settings &settings)
@@ -44,8 +43,11 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
     }
     catch( const std::runtime_error &e )
     {
-        qCritical() << "SubtitlesFixer: fix for file " << filepath
-                    << " was failed with " << e.what() << " exception.";
+        QTextStream error;
+        error << "SubtitlesFixer: fix for file " << filepath
+              << " was failed with " << e.what() << " exception.";
+        emit signalError(*error.string());
+
         return false;
     }
 
@@ -59,13 +61,19 @@ void SubtitlesFixer::readFile(const QString &filepath)
 
     if( !file.exists() )
     {
-        qCritical() << "File not found!\nFile: " << filepath;
+        const QString error = QString("File not found!\nFile: %1").arg(filepath);
+        emit signalError(error);
+        qCritical() << error;
+
         throw NoSuchFileException();
     }
 
     if( !file.open( QIODevice::ReadOnly | QFile::Text ) )
     {
-        qCritical() << "Failed while openning file in read mode!\nFile: " << filepath;
+        const QString error = QString("Failed while openning file in read mode!\nFile: %1").arg(filepath);
+        emit signalError(error);
+        qCritical() << error;
+
         throw OpenningFileErrorException();
     }
 
@@ -82,8 +90,14 @@ void SubtitlesFixer::saveFile(const QString &filepath)
     QFile outFile( filepath );
     if( !outFile.open( QIODevice::WriteOnly | QFile::Text ) )
     {
-        qCritical() << "Failed while openning file in write mode.\nFile: " << filepath;
-        qCritical() << "error: " << outFile.error();
+        QTextStream errorStream;
+        errorStream << "Failed while openning file in write mode.\nFile: "
+                    << filepath
+                    << "\n error: "
+                    << outFile.error();
+        emit signalError(*errorStream.string());
+        qCritical() << errorStream.string();
+
         throw OpenningFileErrorException();
     }
 
