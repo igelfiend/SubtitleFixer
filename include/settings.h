@@ -4,8 +4,8 @@
 #include "option.h"
 
 
-typedef Option< int     > IntFixField;
-typedef Option< QString > QStringFixField;
+typedef Option< int     > IntOption;
+typedef Option< QString > QStringOption;
 
 /**
  * @brief The SubtitlesFixData class used for storing data which used for updating subtitle files.
@@ -39,17 +39,17 @@ public:
      * @brief Font size increase getter.
      * @return font size increase field.
      */
-    IntFixField getIncreaseFontSize() const { return _increaseFontSize; }
+    IntOption getIncreaseFontSize() const { return _increaseFontSize; }
 
     /**
      * @brief Font name getter.
      * @return font name field,
      */
-    QStringFixField getNewFontName() const { return _newFontName; }
+    QStringOption getNewFontName() const { return _newFontName; }
 
 private:
-    IntFixField     _increaseFontSize;  ///< font size increase field.
-    QStringFixField _newFontName;       ///< font name field.
+    IntOption     _increaseFontSize;  ///< font size increase field.
+    QStringOption _newFontName;       ///< font name field.
 };
 
 #define SETTINGS_H
