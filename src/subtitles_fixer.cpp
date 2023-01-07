@@ -6,6 +6,8 @@
 #include <QTextCodec>
 #include <QTextStream>
 
+#include "reader/subtitle_block_reader.h"
+#include "reader/subtitle_data.h"
 #include "subtitles_fixer_exceptions.h"
 
 SubtitlesFixer::SubtitlesFixer(QObject *parent)
@@ -19,23 +21,26 @@ void SubtitlesFixer::setSettings(const Settings &settings)
 
 bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
 {
-    //! Clear previous data
-    _header.clear();
-    _fileData.clear();
-
     try
     {
-        //! Reading subtitle file
-        readFile( filepath );
+        SubtitleData subData = SubtitleBlockReader::readFromFile( filepath );
 
-        //! Receiving start of the style block
-        int currentRow = getStartOfTheStyleGroupIndex();
+        SubtitleBlock &styles      = subData.getStylesBlock();
+        SubtitleRow   &styleFormat = styles.getFormatLine();
 
-        //! Reading style header and moving start ptr on the next row
-        readHeader( currentRow );
-        ++currentRow;
 
-        processStyleData( currentRow );
+
+
+
+
+//        //! Receiving start of the style block
+//        int currentRow = getStartOfTheStyleGroupIndex();
+
+//        //! Reading style header and moving start ptr on the next row
+//        readHeader( currentRow );
+//        ++currentRow;
+
+//        processStyleData( currentRow );
 
         //! Saving result file
         //! (overwriting existing file was failed in tests, so it's recomended to save in new file)
@@ -54,35 +59,29 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
     return true;
 }
 
-void SubtitlesFixer::readFile(const QString &filepath)
+QStringList SubtitlesFixer::readFile( const QString &filepath )
 {
-    //! Receiving data
     QFile file( filepath );
 
-    if( !file.exists() )
+    if( file.open( QIODevice::ReadOnly | QFile::Text ) )
     {
-        const QString error = QString("File not found!\nFile: %1").arg(filepath);
-        emit signalError(error);
-        qCritical() << error;
+        QStringList data;
 
-        throw FileNotFoundException();
+        while( !file.atEnd() )
+        {
+            data.append( file.readLine() );
+        }
+
+        file.close();
+
+        return data;
     }
 
-    if( !file.open( QIODevice::ReadOnly | QFile::Text ) )
-    {
-        const QString error = QString("Failed while openning file in read mode!\nFile: %1").arg(filepath);
-        emit signalError(error);
-        qCritical() << error;
+    const QString error = QString("Failed opening file: %1, code %2").arg(filepath).arg(file.error());
+    emit signalError(error);
+    qCritical() << error;
 
-        throw OpenFileErrorException();
-    }
-
-    while( !file.atEnd() )
-    {
-        _fileData.append( file.readLine() );
-    }
-
-    file.close();
+    throw OpenFileErrorException();
 }
 
 void SubtitlesFixer::saveFile(const QString &filepath)

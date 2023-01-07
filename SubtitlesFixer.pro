@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    src/reader/subtitle_row_serializer.cpp \
     src/main.cpp \
     src/subtitles_fixer_mainwindow.cpp \
     src/subtitles_fixer.cpp
@@ -32,7 +33,13 @@ INCLUDEPATH += include
 HEADERS += \
     include/codec_settings.h \
     include/option.h \
+    include/reader/subtitle_block_reader.h \
+    include/reader/subtitle_data.h \
+    include/reader/subtitle_row.h \
+    include/reader/subtitle_row_serializer.h \
     include/settings.h \
+    include/reader/subtitle_block.h \
+    include/string_helper.h \
     include/subtitles_fixer_mainwindow.h \
     include/subtitles_fixer_exceptions.h \
     include/subtitles_fixer.h

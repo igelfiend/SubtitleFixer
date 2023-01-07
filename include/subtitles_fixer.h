@@ -5,9 +5,11 @@
 #include <QMap>
 #include <QObject>
 #include <QList>
+#include <QStringList>
 #include <QPair>
 
 #include "settings.h"
+#include "reader/subtitle_block.h"
 
 
 /**
@@ -39,14 +41,8 @@ signals:
     void signalLog(QString);
     void signalError(QString);
 
-private:
-    /**
-     * @brief Reads subtitle file.
-     * @exception NoSuchFileException - when file doesn't exists.
-     * @exception OpenningFileErrorException - when failed opening file for reading.
-     * @param filepath - read path.
-     */
-    void readFile( const QString &filepath );
+private: 
+    QStringList readFile( const QString &filepath );
 
     /**
      * @brief Saves subtitle file.
@@ -61,6 +57,8 @@ private:
      * @return index of the style block.
      */
     int getStartOfTheStyleGroupIndex() const;
+
+
 
     /**
      * @brief Reads header of the style block.
@@ -106,6 +104,7 @@ private:
     QStringList _header;        ///< List of queued style-block header titles
     QStringList _fileData;      ///< All-readed data from file
     Settings _settings;
+    QList< SubtitleBlock > _data;
 };
 
 #endif // SUBTITLES_FIXER_H
