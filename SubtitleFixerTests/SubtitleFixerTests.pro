@@ -6,4 +6,9 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=  tst_basictestcase.cpp
+SOURCES +=  \
+        main.cpp
+
+HEADERS += \
+    auto_test.h
+
