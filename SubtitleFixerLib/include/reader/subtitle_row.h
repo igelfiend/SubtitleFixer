@@ -6,16 +6,6 @@
 #include <QTextStream>
 #include "string_helper.h"
 
-#define COMA_WITH_SPACES_REGEX "";
-
-
-inline QString getValuesStringFromRow(const QString &row, qsizetype splitIndex)
-{
-    return row.last(row.length() - splitIndex - 1);
-}
-
-// It's time to start writing tests!!!!
-
 class SubtitleRow
 {
 public:
@@ -88,12 +78,12 @@ public:
 class ContentSubtitleRow: public SubtitleRow
 {
 public:
-    ContentSubtitleRow(const QString &row, qsizetype splitIndex)
+    ContentSubtitleRow(const QString &row)
         : SubtitleRow(SubtitleRow::Content)
     {
-        this->title = row.first(splitIndex);
-        QString valuesStr = getValuesStringFromRow(row, splitIndex);
-        this->values = valuesStr.split(',');
+        RowData rowData = getRowDataFromString(row);
+        this->title = rowData.title;
+        this->values = rowData.values;
     }
 
     QString toString() const override
@@ -105,13 +95,13 @@ public:
 };
 
 
-class FormatterSubtitleRow: public SubtitleRow
+class FormatterSubtitleRow: public ContentSubtitleRow
 {
 public:
-    FormatterSubtitleRow(const QString &row, qsizetype splitIndex)
-        : SubtitleRow(SubtitleRow::Formatter)
+    FormatterSubtitleRow(const QString &row)
+        : ContentSubtitleRow(row)
     {
-        this->title = row.first(splitIndex);
+        this->dataType = SubtitleRow::Formatter;
     }
 
     QString toString() const override
