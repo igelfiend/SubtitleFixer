@@ -29,16 +29,15 @@ SubtitleRow SubtitleRowSerializer::parse(const QString &row)
         return HeaderSubtitleRow(rowTrimmed);
     }
 
-    qsizetype splitterIndex = rowTrimmed.indexOf(':');
-    if( splitterIndex >= 0 )
+    if( rowTrimmed.contains(':') )
     {
         if( rowTrimmed.startsWith("Format:", Qt::CaseInsensitive) )
         {
-            return FormatterSubtitleRow(rowTrimmed, splitterIndex);
+            return FormatterSubtitleRow(rowTrimmed);
         }
         else
         {
-            return ContentSubtitleRow(rowTrimmed, splitterIndex);
+            return ContentSubtitleRow(rowTrimmed);
         }
     }
 
