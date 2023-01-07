@@ -24,6 +24,7 @@ CONFIG += c++11
 
 SOURCES += \
     src/reader/subtitle_row_serializer.cpp \
+    src/editor/subtitle_style_editor.cpp \
     src/main.cpp \
     src/subtitles_fixer_mainwindow.cpp \
     src/subtitles_fixer.cpp
@@ -31,6 +32,9 @@ SOURCES += \
 INCLUDEPATH += include
 
 HEADERS += \
+    include/editor/subtitle_style_editor.h \
+    include/editor/subtitle_style_rule.h \
+    include/editor/subtitle_style_validator.h \
     include/codec_settings.h \
     include/option.h \
     include/reader/subtitle_block_reader.h \
