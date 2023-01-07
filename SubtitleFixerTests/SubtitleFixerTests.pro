@@ -4,11 +4,21 @@ QT -= gui
 CONFIG += qt console warn_on depend_includepath testcase
 CONFIG -= app_bundle
 
+DEFINES += Q_COMPILER_INITIALIZER_LISTS
+
 TEMPLATE = app
 
 SOURCES +=  \
         main.cpp
 
-HEADERS += \
-    auto_test.h
+INCLUDEPATH += \
+        ../SubtitleFixerLib/include
 
+
+win32:CONFIG(release, debug|release): LIBS += -L../SubtitleFixerLib/release/ -lSubtitleFixerLib
+else:win32:CONFIG(debug, debug|release): LIBS += -L../SubtitleFixerLib/debug/ -lSubtitleFixerLib
+else:unix: LIBS += -L../SubtitleFixerLib/ -lSubtitleFixerLib
+
+HEADERS += \
+    auto_test.h\
+    test_string_helpers.h
