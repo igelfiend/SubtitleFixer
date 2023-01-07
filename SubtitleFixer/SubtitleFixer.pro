@@ -23,34 +23,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
-    src/reader/subtitle_row_serializer.cpp \
-    src/editor/subtitle_style_editor.cpp \
     src/main.cpp \
     src/subtitles_fixer_mainwindow.cpp \
-    src/subtitles_fixer.cpp
 
-INCLUDEPATH += include
+INCLUDEPATH += \
+        include \
+        ../SubtitleFixerLib/include
 
 HEADERS += \
-    include/editor/subtitle_style_editor.h \
-    include/editor/subtitle_style_rule.h \
-    include/editor/subtitle_style_validator.h \
-    include/codec_settings.h \
-    include/option.h \
-    include/reader/subtitle_block_reader.h \
-    include/reader/subtitle_data.h \
-    include/reader/subtitle_row.h \
-    include/reader/subtitle_row_serializer.h \
-    include/settings.h \
-    include/reader/subtitle_block.h \
-    include/string_helper.h \
     include/subtitles_fixer_mainwindow.h \
-    include/subtitles_fixer_exceptions.h \
-    include/subtitles_fixer.h
 
 
 FORMS += \
         subtitles_fixer_mainwindow.ui
+
+
+win32:CONFIG(release, debug|release): LIBS += -L../SubtitleFixerLib/release/ -lSubtitleFixerLib
+else:win32:CONFIG(debug, debug|release): LIBS += -L../SubtitleFixerLib/debug/ -lSubtitleFixerLib
+else:unix: LIBS += -L../SubtitleFixerLib/ -lSubtitleFixerLib
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
