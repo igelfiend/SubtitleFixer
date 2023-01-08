@@ -133,9 +133,7 @@ public:
 
     QString toString() const override
     {
-        QTextStream out;
-        out << title << ": " << values.join(',');
-        return *out.string();
+        return QString( "%1: %2" ).arg( title, values.join(',') );
     }
 
     bool isStoreValues() const override
@@ -156,9 +154,7 @@ public:
 
     QString toString() const override
     {
-        QTextStream out;
-        out << title << ": " << values.join(", ");
-        return *out.string();
+        return QString( "%1: %2" ).arg( title, values.join(", ") );
     }
 };
 
