@@ -30,22 +30,32 @@ private slots:
 private:
     SubtitleBlock regularBlock;
     SubtitleBlock emptyBlock;
+    SubtitleBlock onlyWithTitleBlock;
 };
 
 inline TestBlockValidatorRule::TestBlockValidatorRule()
 {
     regularBlock = SubtitleBlock{
         "TestBlock",
-        QList<SubtitleRow>{
-            HeaderSubtitleRow   ( "[TestBlock]" ),
-            FormatterSubtitleRow( "Format: A, B, C" ),
-            ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ),
-            ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ),
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new HeaderSubtitleRow   ( "[TestBlock]" ) ),
+            SubtitleRowPtr( new CommentSubtitleRow  ( "; This is comment row" ) ),
+            SubtitleRowPtr( new FormatterSubtitleRow( "Format: A, B, C" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ) ),
+            SubtitleRowPtr( new UnknownSubtitleRow  ( "Row with unrecognized data" ) ),
+            SubtitleRowPtr( new EmptySubtitleRow() ),
         }
     };
-    auto emptyBlock = SubtitleBlock{
+    emptyBlock = SubtitleBlock{
         "",
-        QList<SubtitleRow>{ }
+        QList< SubtitleRowPtr >{ }
+    };
+    onlyWithTitleBlock = SubtitleBlock{
+        "TestBlock",
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new HeaderSubtitleRow( "[TestBlock]" ) ),
+        }
     };
 }
 
@@ -56,26 +66,27 @@ inline void TestBlockValidatorRule::TestHasHeaderRule_data()
 
     auto headlessBlock = SubtitleBlock{
         "TestBlock",
-        QList<SubtitleRow>{
-            FormatterSubtitleRow( "Format: A, B, C" ),
-            ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ),
-            ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ),
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new FormatterSubtitleRow( "Format: A, B, C" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ) ),
         }
     };
     auto anonymousBlock = SubtitleBlock{
         "",
-        QList<SubtitleRow>{
-            HeaderSubtitleRow   ( "[]" ),
-            FormatterSubtitleRow( "Format: A, B, C" ),
-            ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ),
-            ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ),
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new HeaderSubtitleRow   ( "[]" ) ),
+            SubtitleRowPtr( new FormatterSubtitleRow( "Format: A, B, C" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Italic, 50, Terminal" ) ),
         }
     };
 
-    QTest::newRow( "block with regular header is valid" ) << this->regularBlock << true;
-    QTest::newRow( "empty block is not valid" )           << this->emptyBlock   << false;
-    QTest::newRow( "headless block is not valid" )        << headlessBlock      << false;
-    QTest::newRow( "anonymous block is not valid" )       << anonymousBlock     << false;
+    QTest::newRow( "block with regular header is valid" ) << this->regularBlock       << true;
+    QTest::newRow( "block with only header is valid" )    << this->onlyWithTitleBlock << true;
+    QTest::newRow( "empty block is not valid" )           << this->emptyBlock         << false;
+    QTest::newRow( "headless block is not valid" )        << headlessBlock            << false;
+    QTest::newRow( "anonymous block is not valid" )       << anonymousBlock           << false;
 }
 
 inline void TestBlockValidatorRule::TestHasHeaderRule()
@@ -93,9 +104,9 @@ inline void TestBlockValidatorRule::TestHasFormatRowRule_data()
 
     auto blockWithoutFormatter = SubtitleBlock{
         "TestBlock",
-        QList<SubtitleRow>{
-            HeaderSubtitleRow   ( "[TestBlock]" ),
-            ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ),
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new HeaderSubtitleRow   ( "[TestBlock]" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ) ),
         }
     };
 
@@ -118,16 +129,17 @@ inline void TestBlockValidatorRule::TestColumnsCountEqualRule_data()
 
     auto blockWithDifferentElementsCount = SubtitleBlock{
         "TestBlock",
-        QList<SubtitleRow>{
-            HeaderSubtitleRow   ( "[TestBlock]" ),
-            FormatterSubtitleRow( "Format: A, B" ),
-            ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ),
-            ContentSubtitleRow  ( "Style: Italic, 50" ),
+        QList< SubtitleRowPtr >{
+            SubtitleRowPtr( new HeaderSubtitleRow   ( "[TestBlock]" ) ),
+            SubtitleRowPtr( new FormatterSubtitleRow( "Format: A, B" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Bold, 20, Times New Romans" ) ),
+            SubtitleRowPtr( new ContentSubtitleRow  ( "Style: Italic, 50" ) ),
         }
     };
 
-    QTest::newRow( "block with equal count of elements is valid" ) << this->regularBlock << true;
-    QTest::newRow( "empty block is not valid" )                    << this->emptyBlock   << false;
+    QTest::newRow( "block with equal count of elements is valid" ) << this->regularBlock       << true;
+    QTest::newRow( "block with only header is valid" )             << this->onlyWithTitleBlock << true;
+    QTest::newRow( "empty block is valid" )                        << this->emptyBlock         << true;
     QTest::newRow( "block with different elements count is not valid" )
             << blockWithDifferentElementsCount
             << false;
