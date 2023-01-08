@@ -1,12 +1,13 @@
 #ifndef SUBTITLE_ROW_H
 #define SUBTITLE_ROW_H
 
+#include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
 #include "string_helper.h"
 
-class SubtitleRow
+class ISubtitleRow
 {
 public:
     enum DataType
@@ -19,27 +20,61 @@ public:
         Formatter = 4,
     };
 
-    SubtitleRow()
-    { }
+    virtual ~ISubtitleRow() { }
 
-    SubtitleRow(DataType dataType)
-        : dataType(dataType)
-    { }
+    virtual QString toString() const = 0;
+    virtual bool isStoreValues() const = 0;
+    virtual DataType getDataType() const = 0;
+    virtual const QString &getTitle() const = 0;
+    virtual const QStringList &getValues() const = 0;
+};
 
+typedef QSharedPointer< ISubtitleRow > SubtitleRowPtr;
+
+class SubtitleRow: public ISubtitleRow
+{
+public:
     SubtitleRow(const QString &title, const QStringList &values, DataType dataType)
         : dataType(dataType)
         , title(title)
         , values(values)
     { }
 
-    virtual QString toString() const
+    QString toString() const override
     {
         return QString();
+    }
+
+    bool isStoreValues() const override
+    {
+        return false;
+    }
+
+    DataType getDataType() const override
+    {
+        return dataType;
+    }
+
+    const QString &getTitle() const override
+    {
+        return title;
+    }
+
+    const QStringList &getValues() const override
+    {
+        return values;
     }
 
     DataType dataType;
     QString title;
     QStringList values;
+
+protected:
+    SubtitleRow()
+    { }
+    SubtitleRow(DataType dataType)
+        : dataType(dataType)
+    { }
 };
 
 
@@ -56,6 +91,11 @@ public:
     {
         return QString(";%1").arg(title);
     }
+
+    bool isStoreValues() const override
+    {
+        return false;
+    }
 };
 
 
@@ -71,6 +111,11 @@ public:
     QString toString() const override
     {
         return QString("[%1]").arg(title);
+    }
+
+    bool isStoreValues() const override
+    {
+        return false;
     }
 };
 
@@ -91,6 +136,11 @@ public:
         QTextStream out;
         out << title << ": " << values.join(',');
         return *out.string();
+    }
+
+    bool isStoreValues() const override
+    {
+        return true;
     }
 };
 
@@ -119,6 +169,16 @@ public:
     EmptySubtitleRow()
         : SubtitleRow(SubtitleRow::Empty)
     { }
+
+    QString toString() const override
+    {
+        return QString();
+    }
+
+    bool isStoreValues() const override
+    {
+        return false;
+    }
 };
 
 
@@ -134,6 +194,11 @@ public:
     QString toString() const override
     {
         return title;
+    }
+
+    bool isStoreValues() const override
+    {
+        return false;
     }
 };
 

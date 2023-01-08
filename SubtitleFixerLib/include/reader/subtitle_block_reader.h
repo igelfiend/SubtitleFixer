@@ -66,11 +66,11 @@ private:
 
         for(const QString &line: lines)
         {
-            SubtitleRow subLine = SubtitleRowSerializer::parse( line );
+            SubtitleRowPtr subLine = SubtitleRowSerializer::parse( line );
 
-            if( subLine.dataType == SubtitleRow::Header )
+            if( subLine->getDataType() == SubtitleRow::Header )
             {
-                subBlock.name = subLine.title;
+                subBlock.name = subLine->getTitle();
                 headerRead = true;
             }
 

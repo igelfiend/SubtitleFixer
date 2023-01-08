@@ -18,7 +18,7 @@ public:
     {
         for( const auto &line: lines )
         {
-            if( line.dataType == SubtitleRow::Formatter )
+            if( line->getDataType() == SubtitleRow::Formatter )
             {
                 return true;
             }
@@ -27,11 +27,11 @@ public:
         return false;
     }
 
-    SubtitleRow &getFormatLine()
+    SubtitleRowPtr getFormatLine()
     {
         for( auto it = lines.begin(); it != lines.end(); ++it )
         {
-            if( it->dataType == SubtitleRow::Formatter )
+            if( (*it)->getDataType() == SubtitleRow::Formatter )
             {
                 return *it;
             }
@@ -42,7 +42,7 @@ public:
 
 
     QString name;
-    QList< SubtitleRow > lines;
+    QList< SubtitleRowPtr > lines;
 };
 
 

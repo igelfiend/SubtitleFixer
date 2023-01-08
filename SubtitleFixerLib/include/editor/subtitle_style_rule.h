@@ -49,8 +49,8 @@ public:
     bool validate() const override
     {
         return  ( _block.lines.count() > 0 )
-                && ( _block.lines.at(0).dataType == SubtitleRow::Header )
-                && ( !_block.lines.at(0).title.isEmpty() );
+                && ( _block.lines.at(0)->getDataType() == SubtitleRow::Header )
+                && ( !_block.lines.at(0)->getTitle().isEmpty() );
     }
 };
 
@@ -80,22 +80,25 @@ public:
 
     bool validate() const override
     {
-        QList< const SubtitleRow* > linesWithoutHeader;
-        for( qsizetype i = 1; i < _block.lines.length(); ++i )
+        QList< SubtitleRowPtr > contentfulLines;
+        for( const auto &line: _block.lines )
         {
-            linesWithoutHeader << &_block.lines.at(i);
+            if( line->isStoreValues() )
+            {
+                contentfulLines << line;
+            }
         }
 
-        if( linesWithoutHeader.empty() )
+        if( contentfulLines.empty() )
         {
-            return false;
+            return true;
         }
 
-        auto rowIt = linesWithoutHeader.begin();
-        int columnsCount = (*rowIt)->values.length();
-        for(; rowIt != linesWithoutHeader.end(); ++rowIt)
+        auto rowIt = contentfulLines.begin();
+        int columnsCount = (*rowIt)->getValues().length();
+        for(; rowIt != contentfulLines.end(); ++rowIt)
         {
-            if( columnsCount != (*rowIt)->values.length() )
+            if( columnsCount != (*rowIt)->getValues().length() )
             {
                 return false;
             }

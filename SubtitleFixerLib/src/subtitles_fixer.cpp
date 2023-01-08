@@ -26,7 +26,7 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
         SubtitleData subData = SubtitleBlockReader::readFromFile( filepath );
 
         SubtitleBlock &styles      = subData.getStylesBlock();
-        SubtitleRow   &styleFormat = styles.getFormatLine();
+        SubtitleRowPtr styleFormat = styles.getFormatLine();
 
 
 

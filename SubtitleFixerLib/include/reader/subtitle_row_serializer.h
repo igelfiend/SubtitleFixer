@@ -10,7 +10,7 @@ class SubtitleRowSerializer
 public:
     SubtitleRowSerializer();
 
-    static SubtitleRow parse(const QString &row);
+    static SubtitleRowPtr parse(const QString &row);
 };
 
 #endif // SUBTITLEROWSERIALIZER_H

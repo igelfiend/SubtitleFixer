@@ -11,37 +11,37 @@ SubtitleRowSerializer::SubtitleRowSerializer()
 
 }
 
-SubtitleRow SubtitleRowSerializer::parse(const QString &row)
+SubtitleRowPtr SubtitleRowSerializer::parse(const QString &row)
 {
     QString rowTrimmed = row.trimmed();
     if( rowTrimmed.isEmpty() )
     {
-        return EmptySubtitleRow();
+        return SubtitleRowPtr( new EmptySubtitleRow() );
     }
 
     if( rowTrimmed.startsWith(';') )
     {
-        return CommentSubtitleRow( rowTrimmed );
+        return SubtitleRowPtr( new CommentSubtitleRow( rowTrimmed ) );
     }
 
     if( stringIsBlockHeader(rowTrimmed) )
     {
-        return HeaderSubtitleRow(rowTrimmed);
+        return SubtitleRowPtr( new HeaderSubtitleRow( rowTrimmed ) );
     }
 
     if( rowTrimmed.contains(':') )
     {
         if( rowTrimmed.startsWith("Format:", Qt::CaseInsensitive) )
         {
-            return FormatterSubtitleRow(rowTrimmed);
+            return SubtitleRowPtr( new FormatterSubtitleRow( rowTrimmed ) );
         }
         else
         {
-            return ContentSubtitleRow(rowTrimmed);
+            return SubtitleRowPtr( new ContentSubtitleRow( rowTrimmed ) );
         }
     }
 
     qWarning() << "SubtitleRowSerializer: row type not recognized. Row: \"" << row << "\"";
 
-    return UnknownSubtitleRow(rowTrimmed);
+    return SubtitleRowPtr( new UnknownSubtitleRow( rowTrimmed ) );
 }
