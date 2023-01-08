@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#include "subtitle_style_validator.h"
+#include "reader/subtitle_block.h"
 #include "reader/subtitle_row.h"
 
 

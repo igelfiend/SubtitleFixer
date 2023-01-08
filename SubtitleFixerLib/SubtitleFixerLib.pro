@@ -20,9 +20,9 @@ SOURCES += \
 INCLUDEPATH += include
 
 HEADERS += \
+    include/editor/subtitle_block_validator.h \
     include/editor/subtitle_style_editor.h \
     include/editor/subtitle_style_rule.h \
-    include/editor/subtitle_style_validator.h \
     include/codec_settings.h \
     include/option.h \
     include/reader/subtitle_block.h \
