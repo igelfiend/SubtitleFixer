@@ -6,11 +6,8 @@
 #include <QString>
 
 #include "auto_test.h"
+#include "auto_test_utils.h"
 #include "string_helper.h"
-
-#define QT_NO_DEBUG_OUTPUT
-
-void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg){ }
 
 class TestStringHelpers : public QObject
 {
