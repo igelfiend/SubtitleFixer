@@ -23,5 +23,6 @@ HEADERS += \
     auto_test.h\
     auto_test_utils.h \
     test_string_helpers.h \
+    reader/test_subtitle_row.h \
     editor/test_subtitle_validator.h \
     editor/test_subtitle_validator_rule.h
