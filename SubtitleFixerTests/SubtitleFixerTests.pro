@@ -22,4 +22,5 @@ else:unix: LIBS += -L../SubtitleFixerLib/ -lSubtitleFixerLib
 HEADERS += \
     auto_test.h\
     test_string_helpers.h \
+    test_subtitle_validator.h \
     test_subtitle_validator_rule.h

@@ -14,14 +14,19 @@ class AbstractSubtitleValidator
 {
 public:
     virtual ~AbstractSubtitleValidator() { }
-    virtual bool validate();
+    virtual bool validate() = 0;
+    virtual void setRules(const QList<RulePtr>&) = 0;
+    virtual void addRules(const QList<RulePtr>&) = 0;
 
-    virtual QStringList getErrors() const;
+    virtual const QStringList &getErrors() const = 0;
 };
 
 class SubtitleBlockValidator: public AbstractSubtitleValidator
 {
 public:
+    SubtitleBlockValidator()
+    { }
+
     SubtitleBlockValidator(const SubtitleBlock &block)
         :_rules{ RulePtr( new HasHeaderRule        ( block ) ),
                  RulePtr( new HasFormatRowRule     ( block ) ),
@@ -41,6 +46,21 @@ public:
         }
 
         return _errors.isEmpty();
+    }
+
+    void setRules(const QList<RulePtr> &rules) override
+    {
+        _rules = rules;
+    }
+
+    void addRules(const QList<RulePtr> &rules) override
+    {
+        _rules << rules;
+    }
+
+    const QStringList &getErrors() const override
+    {
+        return _errors;
     }
 
 
