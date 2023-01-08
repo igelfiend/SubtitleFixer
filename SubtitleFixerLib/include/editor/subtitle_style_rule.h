@@ -12,77 +12,96 @@ class AbstractSubtitleBlockValidationRule
 public:
     virtual ~AbstractSubtitleBlockValidationRule() { }
 
-    virtual bool validate() const;
-    virtual QString getError() const;
+    virtual bool validate() const = 0;
+    virtual QString getError() const = 0;
 };
-
-
 
 class BaseSubtitleBlockValidationRule: public AbstractSubtitleBlockValidationRule
 {
 public:
-    BaseSubtitleBlockValidationRule(const SubtitleStyleValidator &validator, const QString &error)
-        : _validator(validator)
+    BaseSubtitleBlockValidationRule(const SubtitleBlock &block, const QString &error)
+        : _block(block)
         , _error(error)
     { }
+    ~BaseSubtitleBlockValidationRule() { }
 
-    bool validate() const override;
     QString getError() const override
     {
         return _error;
     }
 
 protected:
-    const SubtitleStyleValidator &_validator;
+    const SubtitleBlock &_block;
 
 private:
     const QString _error;
 };
 
 
-class HasHeaderRule: BaseSubtitleBlockValidationRule
+class HasHeaderRule: public BaseSubtitleBlockValidationRule
 {
 public:
-    HasHeaderRule(const SubtitleStyleValidator &validator)
-        : BaseSubtitleBlockValidationRule(validator, "Header not found or invalid in block")
+    HasHeaderRule(const SubtitleBlock &block)
+        : BaseSubtitleBlockValidationRule(block, "Header not found or invalid in block")
     { }
+    ~HasHeaderRule() { }
 
     bool validate() const override
     {
-        const SubtitleBlock &block = this->_validator.getBlockForValidation();
-        return  ( block.lines.count() > 0 )
-                && ( block.lines.at(0).dataType == SubtitleRow::Header )
-                && ( !block.lines.at(0).title.isEmpty() );
+        return  ( _block.lines.count() > 0 )
+                && ( _block.lines.at(0).dataType == SubtitleRow::Header )
+                && ( !_block.lines.at(0).title.isEmpty() );
     }
 };
 
 
-class HasFormatRowRule: BaseSubtitleBlockValidationRule
+class HasFormatRowRule: public BaseSubtitleBlockValidationRule
 {
 public:
-    HasFormatRowRule(const SubtitleStyleValidator &validator)
-        : BaseSubtitleBlockValidationRule(validator, "Format row not found in block")
+    HasFormatRowRule(const SubtitleBlock &block)
+        : BaseSubtitleBlockValidationRule(block, "Format row not found in block")
     { }
+    ~HasFormatRowRule() { }
 
     bool validate() const override
     {
-        const SubtitleBlock &block = this->_validator.getBlockForValidation();
-        return block.hasFormatLine();
+        return _block.hasFormatLine();
     }
 };
 
 
-class HasFormatRowRule: BaseSubtitleBlockValidationRule
+class ColumnsCountEqualRule: public BaseSubtitleBlockValidationRule
 {
 public:
-    HasFormatRowRule(const SubtitleStyleValidator &validator)
-        : BaseSubtitleBlockValidationRule(validator, "Format row not found in block")
+    ColumnsCountEqualRule(const SubtitleBlock &block)
+        : BaseSubtitleBlockValidationRule(block, "No data or count of columns is not equal")
     { }
+    ~ColumnsCountEqualRule() { }
 
     bool validate() const override
     {
-        const SubtitleBlock &block = this->_validator.getBlockForValidation();
-        return block.hasFormatLine();
+        QList< const SubtitleRow* > linesWithoutHeader;
+        for( qsizetype i = 1; i < _block.lines.length(); ++i )
+        {
+            linesWithoutHeader << &_block.lines.at(i);
+        }
+
+        if( linesWithoutHeader.empty() )
+        {
+            return false;
+        }
+
+        auto rowIt = linesWithoutHeader.begin();
+        int columnsCount = (*rowIt)->values.length();
+        for(; rowIt != linesWithoutHeader.end(); ++rowIt)
+        {
+            if( columnsCount != (*rowIt)->values.length() )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 };
 
