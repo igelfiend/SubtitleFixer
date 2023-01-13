@@ -40,6 +40,33 @@ public:
         throw FormatLineNotFoundException();
     }
 
+    bool operator==( const SubtitleBlock &another ) const
+    {
+        if( this->name != another.name )
+        {
+            return false;
+        }
+
+        if( this->lines.length() != another.lines.length() )
+        {
+            return false;
+        }
+
+        for( qsizetype i = 0; i < this->lines.length(); ++i )
+        {
+            if( *(this->lines[ i ]) != *(another.lines[ i ]) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool operator!=( const SubtitleBlock &another ) const
+    {
+        return !( (*this) == another );
+    }
 
     QString name;
     QList< SubtitleRowPtr > lines;
