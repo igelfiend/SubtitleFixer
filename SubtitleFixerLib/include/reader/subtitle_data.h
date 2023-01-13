@@ -2,6 +2,8 @@
 #define SUBTITLE_DATA_H
 
 #include <QList>
+#include <QTextStream>
+
 #include "subtitle_block.h"
 #include "subtitles_fixer_exceptions.h"
 
@@ -12,7 +14,6 @@
 class SubtitleData
 {
 public:
-    SubtitleData() { }
     SubtitleBlock &getBlock( const QString &blockName )
     {
         for( auto it = blocks.begin(); it != blocks.end(); ++it )
@@ -54,6 +55,18 @@ public:
         }
 
         return true;
+    }
+
+    QString toString() const
+    {
+        QString result;
+        QTextStream out( &result );
+        for( const SubtitleBlock &block: blocks )
+        {
+            out << block.toString();
+        }
+
+        return result;
     }
 };
 
