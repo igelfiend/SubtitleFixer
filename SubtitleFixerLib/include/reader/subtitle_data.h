@@ -37,6 +37,24 @@ public:
     }
 
     QList< SubtitleBlock > blocks;
+
+    bool operator==( const SubtitleData &another )
+    {
+        if( this->blocks.length() != another.blocks.length() )
+        {
+            return false;
+        }
+
+        for( qsizetype i = 0; i < this->blocks.length(); ++i )
+        {
+            if( this->blocks[ i ] != another.blocks[ i ] )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 };
 
 #endif // SUBTITLE_DATA_H
