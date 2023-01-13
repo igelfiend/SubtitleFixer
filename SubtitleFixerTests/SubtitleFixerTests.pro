@@ -22,6 +22,7 @@ else:unix: LIBS += -L../SubtitleFixerLib/ -lSubtitleFixerLib
 HEADERS += \
     auto_test.h\
     auto_test_utils.h \
+    reader/test_subtitle_block_reader.h \
     test_string_helpers.h \
     reader/test_subtitle_block.h \
     reader/test_subtitle_row.h \
