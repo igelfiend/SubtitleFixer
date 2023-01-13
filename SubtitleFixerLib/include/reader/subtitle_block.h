@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QString>
 #include <QList>
+#include <QTextStream>
 
 #include "subtitle_row.h"
 #include "subtitles_fixer_exceptions.h"
@@ -66,6 +67,18 @@ public:
     bool operator!=( const SubtitleBlock &another ) const
     {
         return !( (*this) == another );
+    }
+
+    QString toString() const
+    {
+        QString result;
+        QTextStream out( &result );
+        for( auto const &line: lines )
+        {
+            out << line->toString() << "\n";
+        }
+
+        return result;
     }
 
     QString name;
