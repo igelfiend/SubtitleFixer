@@ -17,9 +17,8 @@
 class SubtitleBlockReader
 {
 public:
-    static SubtitleData readFromFile(const QString &filepath)
+    static SubtitleData readFromFile(QFile &file)
     {
-        QFile file( filepath );
         SubtitleData subData;
 
         if( !file.open( QIODevice::ReadOnly | QFile::Text ) )
