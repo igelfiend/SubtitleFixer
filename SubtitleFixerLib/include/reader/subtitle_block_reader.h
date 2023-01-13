@@ -48,6 +48,11 @@ public:
             {
                 // will be entered once - on the first block
                 headerRead = true;
+                blockData.append( line );
+            }
+            else
+            {
+                blockData.append( line );
             }
         }
         subData.blocks.append( createBlock( blockData ) );
