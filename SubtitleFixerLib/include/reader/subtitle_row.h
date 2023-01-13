@@ -27,6 +27,8 @@ public:
     virtual DataType getDataType() const = 0;
     virtual const QString &getTitle() const = 0;
     virtual const QStringList &getValues() const = 0;
+    virtual bool operator==( const ISubtitleRow&) const = 0;
+    virtual bool operator!=( const ISubtitleRow&) const = 0;
 };
 
 typedef QSharedPointer< ISubtitleRow > SubtitleRowPtr;
@@ -63,6 +65,18 @@ public:
     const QStringList &getValues() const override
     {
         return values;
+    }
+
+    bool operator==(const ISubtitleRow &another) const override
+    {
+        return ( this->dataType == another.getDataType() )
+                && ( this->title == another.getTitle() )
+                && (this->values == another.getValues() );
+    }
+
+    bool operator!=(const ISubtitleRow &another) const override
+    {
+        return !( *this == another );
     }
 
     DataType dataType;
