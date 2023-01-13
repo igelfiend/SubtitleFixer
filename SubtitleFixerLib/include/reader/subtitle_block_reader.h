@@ -79,7 +79,8 @@ private:
 
         if( !headerRead )
         {
-            qCritical() << "SubtitleBlockReader::createBlock: created block without header";
+            qCritical() << "SubtitleBlockReader::createBlock: created block without header"
+                        << ". Processed lines: " << lines;
         }
 
         return subBlock;
