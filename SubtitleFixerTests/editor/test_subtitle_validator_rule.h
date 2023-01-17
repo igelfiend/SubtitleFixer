@@ -6,7 +6,7 @@
 
 #include "auto_test.h"
 #include "reader/subtitle_block.h"
-#include "editor/subtitle_style_rule.h"
+#include "editor/subtitle_block_rule.h"
 
 
 class TestBlockValidatorRule: public QObject

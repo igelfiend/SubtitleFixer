@@ -5,7 +5,7 @@
 #include <QString>
 
 #include "auto_test.h"
-#include "editor/subtitle_style_rule.h"
+#include "editor/subtitle_block_rule.h"
 #include "editor/subtitle_block_validator.h"
 
 class TestBlockValidator: public QObject
