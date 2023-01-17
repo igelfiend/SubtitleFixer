@@ -6,9 +6,7 @@
 
 #include "subtitle_block.h"
 #include "subtitles_fixer_exceptions.h"
-
-#define STYLES_TITLE "V4+ Styles"
-#define EVENTS_TITLE "Events"
+#include "constants.h"
 
 
 class SubtitleData
@@ -29,12 +27,7 @@ public:
 
     SubtitleBlock &getStylesBlock()
     {
-        return getBlock( STYLES_TITLE );
-    }
-
-    SubtitleBlock &getEventsBlock()
-    {
-        return getBlock( EVENTS_TITLE );
+        return getBlock( STYLE_BLOCK_TITLE );
     }
 
     QList< SubtitleBlock > blocks;
