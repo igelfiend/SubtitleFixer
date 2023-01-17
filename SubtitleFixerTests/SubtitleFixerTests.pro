@@ -1,4 +1,4 @@
-QT += testlib
+QT += testlib core5compat
 QT -= gui
 
 CONFIG += qt console warn_on depend_includepath testcase
@@ -22,7 +22,7 @@ else:unix: LIBS += -L../SubtitleFixerLib/ -lSubtitleFixerLib
 HEADERS += \
     auto_test.h\
     auto_test_utils.h \
-    reader/test_subtitle_block_reader.h \
+    reader/test_subtitle_data_serializer.h \
     test_string_helpers.h \
     reader/test_subtitle_block.h \
     reader/test_subtitle_row.h \

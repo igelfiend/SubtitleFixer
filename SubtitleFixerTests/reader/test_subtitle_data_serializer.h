@@ -1,5 +1,5 @@
-#ifndef TEST_SUBTITLE_BLOCK_READER_H
-#define TEST_SUBTITLE_BLOCK_READER_H
+#ifndef TEST_SUBTITLE_DATA_SERIALIZER_H
+#define TEST_SUBTITLE_DATA_SERIALIZER_H
 
 
 #include <QtTest>
@@ -10,17 +10,16 @@
 #include <QStringList>
 
 #include "auto_test.h"
-#include "auto_test_utils.h"
-#include "reader/subtitle_block_reader.h"
+#include "reader/subtitle_data_serializer.h"
 #include "reader/subtitle_block.h"
 #include "reader/subtitle_row.h"
 
-class TestSubtitleBlockReader : public QObject
+class TestSubtitleDataSerializer: public QObject
 {
     Q_OBJECT
 public:
-    TestSubtitleBlockReader() = default;
-    ~TestSubtitleBlockReader() = default;
+    TestSubtitleDataSerializer() = default;
+    ~TestSubtitleDataSerializer() = default;
 
 private:
     void fillFileWithData(QFile &file, const QStringList &data);
@@ -43,7 +42,7 @@ public:
     }
 };
 
-inline void TestSubtitleBlockReader::fillFileWithData(QFile &file, const QStringList &data)
+inline void TestSubtitleDataSerializer::fillFileWithData(QFile &file, const QStringList &data)
 {
     if( file.open( QIODevice::WriteOnly | QIODevice::Text) )
     {
@@ -62,17 +61,15 @@ inline void TestSubtitleBlockReader::fillFileWithData(QFile &file, const QString
     }
 }
 
-inline void TestSubtitleBlockReader::TestReadFromFileRaiseExceptionOnReadFail()
+inline void TestSubtitleDataSerializer::TestReadFromFileRaiseExceptionOnReadFail()
 {
     QFileMocked tempFile("tempfile.txt");
 
-    qInstallMessageHandler(noMessageOutput);
     // In a fact there are FileNotOpenedException exception, but somehow i can't catch it :(
-    QVERIFY_THROWS_EXCEPTION( std::runtime_error, SubtitleBlockReader::readFromFile( tempFile ) );
-    qInstallMessageHandler(nullptr);
+    QVERIFY_THROWS_EXCEPTION( std::runtime_error, SubtitleDataSerializer::readFromFile( tempFile ) );
 }
 
-inline void TestSubtitleBlockReader::TestReadFromFile()
+inline void TestSubtitleDataSerializer::TestReadFromFile()
 {
     QStringList data{
         "[Script Info]",
@@ -137,13 +134,13 @@ inline void TestSubtitleBlockReader::TestReadFromFile()
     QTemporaryFile file;
     fillFileWithData( file, data );
 
-    SubtitleData result = SubtitleBlockReader::readFromFile( file );
+    SubtitleData result = SubtitleDataSerializer::readFromFile( file );
 
 
     QCOMPARE_EQ(expectedData, result);
 }
 
-DECLARE_TEST( TestSubtitleBlockReader );
+DECLARE_TEST( TestSubtitleDataSerializer );
 
 
-#endif // TEST_SUBTITLE_BLOCK_READER_H
+#endif // TEST_SUBTITLE_DATA_SERIALIZER_H
