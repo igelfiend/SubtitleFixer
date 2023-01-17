@@ -2,109 +2,35 @@
 #define SUBTITLES_FIXER_H
 
 #include <QString>
-#include <QMap>
-#include <QObject>
-#include <QList>
-#include <QStringList>
-#include <QPair>
 
 #include "settings.h"
-#include "reader/subtitle_block.h"
 
 
 /**
- * @brief The SubtitlesFixer class used for updating subtitle files.
- * At start, can be configured with codec. Default codec is UTF-8 with BOM.
- * For each perform iteration process one subtitle file.
- * Important: Not recommended to rewrite source sub files with new one,
- * In test stage that way was failed with owner right.
+ * @brief Used for fixing subtitle file.
+ * @details all fix parameters can be set via settings.
+ * Don't use the same path for read/save because could be owner rights issue
  */
-class SubtitlesFixer: public QObject
+class SubtitlesFixer
 {
-    Q_OBJECT
-//! Public functions
 public:
-    explicit SubtitlesFixer(QObject *parent = nullptr);
+    explicit SubtitlesFixer();
 
     void setSettings( const Settings &settings );
 
     /**
-     * @brief Function for updating subtitle file using update data.
+     * @brief Updates subtitle file on `filepath` and saves it on `savepath`.
      * @param filepath - path for subtitle file.
      * @param filepath - path for saving result file.
-     * @exception NoSuchFileException - throws when file by filepath doesn't exists.
-     * @exception SettingsGroupNotFoundException - throws when settings group not found.
+     * @returns `true` on success, `false` if something goes wrong. Error can be get via `getError`
      */
     bool fixFile( const QString &filepath, const QString &savepath);
 
-signals:
-    void signalLog(QString);
-    void signalError(QString);
+    QString getError() const;
 
-private: 
-    QStringList readFile( const QString &filepath );
-
-    /**
-     * @brief Saves subtitle file.
-     * @exception OpenningFileErrorException - when failed opening file for writing.
-     * @param filepath - path for saving.
-     */
-    void saveFile( const QString &filepath );
-
-    /**
-     * @brief Searches where starts styles block.
-     * @exception SettingsGroupNotFoundException - when style block wasn't found.
-     * @return index of the style block.
-     */
-    int getStartOfTheStyleGroupIndex() const;
-
-
-
-    /**
-     * @brief Reads header of the style block.
-     * @param headerIndex - index of the start style block.
-     */
-    void readHeader( int headerIndex );
-
-    /**
-     * @brief Process row of the style data. Current process steps:
-     * - updates fontsize;
-     * - updates fontname.
-     * @param rowIndex - index of processed row in file data.
-     */
-    void processRow( int rowIndex );
-
-    /**
-     * @brief Updates fontsize using _fixData.
-     * @param row - reference to processed row.
-     */
-    void updateFontsize( QStringList &row );
-
-    /**
-     * @brief Updates fontname using _fixData.
-     * @param row - reference to processed row.
-     */
-    void updateFontname( QStringList &row );
-
-    /**
-     * @brief Checks if passed row is a declaration of settings block (like [Example])
-     * @param str - checked row
-     * @return true if str is settings block declaration
-     */
-    bool isBlockDeclaration(QString str );
-
-    /**
-     * @brief Process all data in style block, replaces fontnames and fontsizes
-     * @param index - index of the start data
-     */
-    void processStyleData( int index );
-
-//! Private members
 private:
-    QStringList _header;        ///< List of queued style-block header titles
-    QStringList _fileData;      ///< All-readed data from file
     Settings _settings;
-    QList< SubtitleBlock > _data;
+    QString _error;
 };
 
 #endif // SUBTITLES_FIXER_H

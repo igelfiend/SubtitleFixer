@@ -113,6 +113,7 @@ void SubtitlesFixerMainWindow::on_pushButtonStart_clicked()
         else
         {
             ui->textEdit->append( QString( "failed: %1" ).arg( filename ) );
+            ui->textEdit->append( QString( "error: %1"  ).arg( fixer.getError() ) );
         }
     }
 }
