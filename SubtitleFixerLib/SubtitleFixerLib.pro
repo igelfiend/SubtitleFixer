@@ -13,21 +13,24 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/editor/subtitle_block_editor.cpp \
     src/reader/subtitle_row_serializer.cpp \
-    src/editor/subtitle_style_editor.cpp \
     src/subtitles_fixer.cpp
 
 INCLUDEPATH += include
 
 HEADERS += \
+    include/constants.h \
+    include/editor/subtitle_block_editor.h \
+    include/editor/subtitle_block_rule.h \
     include/editor/subtitle_block_validator.h \
-    include/editor/subtitle_style_editor.h \
-    include/editor/subtitle_style_rule.h \
     include/codec_settings.h \
+    include/editor/subtitle_style_editor.h \
     include/option.h \
     include/reader/subtitle_block.h \
     include/reader/subtitle_block_reader.h \
     include/reader/subtitle_data.h \
+    include/reader/subtitle_data_serializer.h \
     include/reader/subtitle_row.h \
     include/reader/subtitle_row_serializer.h \
     include/settings.h \
