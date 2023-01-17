@@ -27,6 +27,8 @@ public:
     virtual DataType getDataType() const = 0;
     virtual const QString &getTitle() const = 0;
     virtual const QStringList &getValues() const = 0;
+    virtual void setValue(qsizetype index, const QString &value) = 0;
+
     virtual bool operator==( const ISubtitleRow&) const = 0;
     virtual bool operator!=( const ISubtitleRow&) const = 0;
 };
@@ -65,6 +67,11 @@ public:
     const QStringList &getValues() const override
     {
         return values;
+    }
+
+    void setValue(qsizetype index, const QString &value) override
+    {
+        values[ index ] = value;
     }
 
     bool operator==(const ISubtitleRow &another) const override
