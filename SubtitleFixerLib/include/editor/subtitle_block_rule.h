@@ -1,5 +1,5 @@
-#ifndef SUBTITLE_STYLE_RULE_H
-#define SUBTITLE_STYLE_RULE_H
+#ifndef SUBTITLE_BLOCK_RULE_H
+#define SUBTITLE_BLOCK_RULE_H
 
 #include <QString>
 
@@ -110,4 +110,4 @@ public:
 
 
 
-#endif // SUBTITLE_STYLE_RULE_H
+#endif // SUBTITLE_BLOCK_RULE_H
