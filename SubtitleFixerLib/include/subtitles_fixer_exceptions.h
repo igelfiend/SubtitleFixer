@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <QString>
 
 class FileNotFoundException: public std::runtime_error
 {
@@ -37,14 +38,24 @@ public:
 class ConvertionToIntFailedException: public std::runtime_error
 {
 public:
-    ConvertionToIntFailedException(): std::runtime_error( "Failed while trying to convert to int" ) { }
+    ConvertionToIntFailedException( const QString &value )
+        : std::runtime_error(
+              QString( "Failed while trying to convert \"%1\" to int" )
+              .arg( value )
+              .toStdString() )
+    { }
 };
 
 
 class FileNotOpenedException: public std::runtime_error
 {
 public:
-    FileNotOpenedException(): std::runtime_error( "File is not opened to be read" ) { }
+    FileNotOpenedException(const QString &filename)
+        : std::runtime_error(
+              QString( "Unable to open file: %1" )
+              .arg( filename )
+              .toStdString() )
+    { }
 };
 
 
@@ -62,4 +73,43 @@ public:
     FormatLineNotFoundException(): std::runtime_error( "Format line in subtitle block not found" ) { }
 };
 
+
+class FormatterRowNotFoundException: public std::runtime_error
+{
+public:
+    FormatterRowNotFoundException(): std::runtime_error( "Formatter block not found" ) { }
+};
+
+
+class ColumnNameNotFromFormatLineException: public std::runtime_error
+{
+public:
+    ColumnNameNotFromFormatLineException( const QString &columnName )
+        : std::runtime_error(
+              QString( "Trying to process \"%1\" column that not from format line" )
+              .arg( columnName )
+              .toStdString()
+        )
+    { }
+};
+
+
+class ExpectedStyleBlockException: public std::runtime_error
+{
+public:
+    ExpectedStyleBlockException( const QString &blockName )
+        : std::runtime_error(
+              QString( "Expected style block, \"%1\" got" )
+              .arg( blockName )
+              .toStdString()
+        )
+    { }
+};
+
+
+class BlockHeaderNotFoundException: public std::runtime_error
+{
+public:
+    BlockHeaderNotFoundException(): std::runtime_error( "Header of the block not found" ) { }
+};
 #endif // SUBTITLES_FIXER_EXCEPTIONS_H
