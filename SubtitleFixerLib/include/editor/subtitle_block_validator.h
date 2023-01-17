@@ -6,7 +6,7 @@
 #include <QSharedPointer>
 
 #include "reader/subtitle_block.h"
-#include "subtitle_style_rule.h"
+#include "subtitle_block_rule.h"
 
 typedef QSharedPointer<AbstractSubtitleBlockValidationRule> RulePtr;
 
