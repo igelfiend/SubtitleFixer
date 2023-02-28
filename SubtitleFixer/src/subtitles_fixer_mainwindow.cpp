@@ -20,16 +20,24 @@ SubtitlesFixerMainWindow::SubtitlesFixerMainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->lineEditFoulderPath->setText( _settings->value( "path", "" ).toString() );
+    QString path             = _settings->value( "path", "" ).toString();
+    int fontIncreaseValue    = _settings->value( "font_increase_value", 20 ).toInt();
+    bool fontIncreaseEnabled = _settings->value( "font_increase_enabled", true ).toBool();
+    QString fontNameValue    = _settings->value( "font_name_value", "Calibri" ).toString();
+    bool fontNameEnabled     = _settings->value( "font_increase_enabled", true ).toBool();
+    int codecIndex           = _settings->value( "codec_index", 0 ).toInt();
+    bool codecHasBom         = _settings->value( "codec_has_bom", true ).toBool();
 
-    ui->spinBoxIncreaseSize->setValue( _settings->value( "font_increase_value", 20 ).toInt() );
-    ui->checkBoxFontsize->setChecked(  _settings->value( "font_increase_enabled", true ).toBool() );
+    ui->lineEditFoulderPath->setText( path );
 
-    ui->fontComboBox->setCurrentFont( QFont( _settings->value( "font_name_value", "Calibri" ).toString() ) );
-    ui->checkBoxFontName->setChecked(        _settings->value( "font_name_enabled", false ).toBool() );
+    ui->spinBoxIncreaseSize->setValue( fontIncreaseValue );
+    ui->checkBoxFontsize->setChecked( fontIncreaseEnabled );
 
-    ui->comboBoxCodecs->setCurrentIndex( _settings->value( "codec_index", 0 ).toInt() );
-    ui->checkBoxBomUsage->setChecked(    _settings->value( "codec_has_bom", true ).toBool() );
+    ui->fontComboBox->setCurrentFont( QFont( fontNameValue ) );
+    ui->checkBoxFontName->setChecked( fontNameEnabled );
+
+    ui->comboBoxCodecs->setCurrentIndex( codecIndex );
+    ui->checkBoxBomUsage->setChecked( codecHasBom );
 }
 
 SubtitlesFixerMainWindow::~SubtitlesFixerMainWindow()
