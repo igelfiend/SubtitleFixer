@@ -32,7 +32,7 @@ public:
 
     QList< SubtitleBlock > blocks;
 
-    bool operator==( const SubtitleData &another )
+    bool operator==( const SubtitleData &another ) const
     {
         if( this->blocks.length() != another.blocks.length() )
         {
