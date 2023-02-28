@@ -1,6 +1,7 @@
 #ifndef SUBTITLE_BLOCK_H
 #define SUBTITLE_BLOCK_H
 
+#include <algorithm>
 #include <QByteArray>
 #include <QDebug>
 #include <QFile>
@@ -39,6 +40,17 @@ public:
         }
 
         throw FormatLineNotFoundException();
+    }
+
+    QList< SubtitleRowPtr > getDataLines() const
+    {
+        QList< SubtitleRowPtr > dataLines;
+        auto func_only_content = []( const SubtitleRowPtr &line ){ return line->getDataType() == SubtitleRow::Content; };
+        std::copy_if( lines.begin(),
+                      lines.end(),
+                      std::back_inserter( dataLines ),
+                      func_only_content );
+        return dataLines;
     }
 
     bool operator==( const SubtitleBlock &another ) const
