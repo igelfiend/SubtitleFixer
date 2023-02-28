@@ -2,6 +2,7 @@ QT += testlib core5compat
 QT -= gui
 
 CONFIG += qt console warn_on depend_includepath testcase
+CONFIG += c++20
 CONFIG -= app_bundle
 
 DEFINES += Q_COMPILER_INITIALIZER_LISTS
