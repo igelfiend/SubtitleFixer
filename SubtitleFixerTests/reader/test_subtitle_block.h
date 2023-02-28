@@ -43,9 +43,6 @@ public:
     ~TestSubtitleBlock() = default;
 
 private slots:
-    void TestHasFormatLine_data();
-    void TestHasFormatLine();
-
     void TestGetFormatLine();
     void TestGetFormatLineRaiseExceptionIfNotFound();
 
@@ -53,23 +50,6 @@ private:
     SubtitleBlock blockWithFormatter;
     SubtitleBlock blockWithoutFormatter;
 };
-
-inline void TestSubtitleBlock::TestHasFormatLine_data()
-{
-    QTest::addColumn< SubtitleBlock >( "block" );
-    QTest::addColumn< bool >( "expected_result" );
-
-    QTest::addRow( "should return true if block has formatter row" )      << blockWithFormatter    << true;
-    QTest::addRow( "should return false if block hasn\'t formatter row" ) << blockWithoutFormatter << false;
-}
-
-inline void TestSubtitleBlock::TestHasFormatLine()
-{
-    QFETCH(SubtitleBlock, block);
-    QFETCH(bool, expected_result);
-
-    QCOMPARE_EQ( block.hasFormatLine(), expected_result );
-}
 
 inline void TestSubtitleBlock::TestGetFormatLine()
 {

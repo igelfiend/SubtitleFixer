@@ -19,39 +19,42 @@ public:
 private slots:
     void TestValidate_data();
     void TestValidate();
+
+private:
+    SubtitleBlock dummyBlock;
 };
 
 class AlwaysInvalidRule: public AbstractSubtitleBlockValidationRule
 {
 public:
-    bool validate() const override    { return false; }
+    bool validate(const SubtitleBlock&) const override { return false; }
     QString getError() const override { return "always invalid rule"; }
 };
 
 class AlwaysValidRule: public AbstractSubtitleBlockValidationRule
 {
 public:
-    bool validate() const override    { return true; }
+    bool validate(const SubtitleBlock&) const override { return true; }
     QString getError() const override { return "always valid rule"; }
 };
 
 inline void TestBlockValidator::TestValidate_data()
 {
-    QTest::addColumn< QList< RulePtr > >( "rules" );
+    QTest::addColumn< QList< RuleConstPtr > >( "rules" );
     QTest::addColumn< bool >( "expected_validation_result" );
     QTest::addColumn< QStringList >( "expected_errors" );
 
-    QList< RulePtr > validRules{
-        RulePtr(new AlwaysValidRule()),
-        RulePtr(new AlwaysValidRule()),
+    QList< RuleConstPtr > validRules{
+        QSharedPointer< const AlwaysValidRule >::create(),
+        QSharedPointer< const AlwaysValidRule >::create(),
     };
-    QList< RulePtr > invalidRules{
-        RulePtr(new AlwaysInvalidRule()),
-        RulePtr(new AlwaysInvalidRule()),
+    QList< RuleConstPtr > invalidRules{
+        QSharedPointer< const AlwaysInvalidRule >::create(),
+        QSharedPointer< const AlwaysInvalidRule >::create(),
     };
-    QList< RulePtr > mixedRules{
-        RulePtr(new AlwaysInvalidRule()),
-        RulePtr(new AlwaysValidRule()),
+    QList< RuleConstPtr > mixedRules{
+        QSharedPointer< const AlwaysInvalidRule >::create(),
+        QSharedPointer< const AlwaysValidRule   >::create(),
     };
 
     QTest::addRow( "valid if all rules are valid" )
@@ -70,13 +73,13 @@ inline void TestBlockValidator::TestValidate_data()
 
 inline void TestBlockValidator::TestValidate()
 {
-    QFETCH( QList< RulePtr >, rules );
+    QFETCH( QList< RuleConstPtr >, rules );
     QFETCH( bool, expected_validation_result);
     QFETCH( QStringList, expected_errors );
 
     SubtitleBlockValidator validator;
     validator.setRules( rules );
-    bool validation_result = validator.validate();
+    bool validation_result = validator.validate( dummyBlock );
 
     QVERIFY( expected_validation_result == validation_result );
     QCOMPARE_EQ( expected_errors, validator.getErrors() );
