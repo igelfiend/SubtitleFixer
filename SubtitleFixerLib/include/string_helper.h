@@ -47,4 +47,9 @@ inline RowData getRowDataFromString(const QString &str)
     return rowData;
 }
 
+inline bool stringsEqualCaseInsensitive( const QString &op1, const QString &op2 )
+{
+    return QString::compare( op1, op2, Qt::CaseInsensitive ) == 0;
+}
+
 #endif // STRING_HELPER_H
