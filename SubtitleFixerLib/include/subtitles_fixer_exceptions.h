@@ -112,4 +112,17 @@ class BlockHeaderNotFoundException: public std::runtime_error
 public:
     BlockHeaderNotFoundException(): std::runtime_error( "Header of the block not found" ) { }
 };
+
+class BlockValidationError: public std::runtime_error
+{
+public:
+    BlockValidationError(const QString &error)
+        : std::runtime_error(
+              QString( "validation error: %1" )
+              .arg( error )
+              .toStdString()
+        )
+    { }
+};
+
 #endif // SUBTITLES_FIXER_EXCEPTIONS_H

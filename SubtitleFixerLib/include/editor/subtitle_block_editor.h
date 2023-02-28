@@ -7,27 +7,28 @@
 #include <functional>
 
 #include "reader/subtitle_block.h"
+#include "editor/subtitle_block_validator.h"
 
 
 class SubtitleBlockEditor
 {
 public:
-    SubtitleBlockEditor(SubtitleBlock &block);
+    SubtitleBlockEditor(SubtitleBlock &block, ValidatorPtr validatorPtr = nullptr);
     void validate();
 
     QStringList getFormatterFields() const;
-    qsizetype getColumnIndex( const QString &columnName ) const;
 
-//    template<typename T> void updateAllValuesForField(const QString &fieldName, T newValue);
     void updateAllValuesForField(
             const QString &fieldName,
             std::function<QString(const QString &element)> updater
     );
 
 private:
+    qsizetype getColumnIndex( const QString &columnName ) const;
     void initFormatIndexes();
 
     SubtitleBlock &_block;
+    ValidatorPtr _validatorPtr;
     QHash<QString, qsizetype> _columnTitlesIndexes;
 };
 

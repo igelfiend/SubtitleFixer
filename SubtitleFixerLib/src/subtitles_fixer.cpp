@@ -4,11 +4,15 @@
 #include <QTextCodec>
 #include <QTextStream>
 
-#include "reader/subtitle_data_serializer.h"
 #include "reader/subtitle_data.h"
 #include "editor/subtitle_style_editor.h"
 
+SubtitlesFixer::SubtitlesFixer(SubtitleDataSerializerPtr serializer)
+    : _serializer( serializer )
+{ }
+
 SubtitlesFixer::SubtitlesFixer()
+    : SubtitlesFixer( QSharedPointer<SubtitleDataSerializer>::create() )
 { }
 
 void SubtitlesFixer::setSettings(const Settings &settings)
@@ -23,11 +27,10 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
     try
     {
         QFile inputFile( filepath );
-        SubtitleData subData = SubtitleDataSerializer::readFromFile( inputFile );
 
+        SubtitleData subData = _serializer->readFromFile( inputFile );
         SubtitleBlock &styles = subData.getStylesBlock();
         SubtitleRowPtr styleFormat = styles.getFormatLine();
-
         SubtitleStyleEditor styleEditor( styles );
 
         auto increaseFont = _settings.getIncreaseFontSize();
@@ -44,10 +47,10 @@ bool SubtitlesFixer::fixFile(const QString &filepath, const QString &savepath)
         }
 
         QFile outputFile( savepath );
-        SubtitleDataSerializer::saveToFile( outputFile,
-                                            subData,
-                                            _settings.getCodecSettings().value.codecName,
-                                            _settings.getCodecSettings().value.hasBom );
+        _serializer->saveToFile( outputFile,
+                                 subData,
+                                 _settings.getCodecSettings().value.codecName,
+                                 _settings.getCodecSettings().value.hasBom );
     }
     catch( const std::runtime_error &e )
     {

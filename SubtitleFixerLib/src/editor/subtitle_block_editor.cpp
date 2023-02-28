@@ -1,35 +1,28 @@
 #include <QDebug>
 
 #include "editor/subtitle_block_editor.h"
-#include "editor/subtitle_block_validator.h"
 #include "subtitles_fixer_exceptions.h"
 
-SubtitleBlockEditor::SubtitleBlockEditor(SubtitleBlock &block)
-    : _block(block)
+
+SubtitleBlockEditor::SubtitleBlockEditor(SubtitleBlock &block, ValidatorPtr validatorPtr)
+    : _block( block )
+    , _validatorPtr( (validatorPtr == nullptr) ? QSharedPointer<SubtitleBlockValidator>::create() : validatorPtr )
 {
     initFormatIndexes();
 }
 
 void SubtitleBlockEditor::validate()
 {
-    SubtitleBlockValidator validator(_block);
-    if( !validator.validate() )
+    if( !_validatorPtr->validate(_block) )
     {
         qCritical() << "SubtitleBlockEditor: provided style block is not valid. Error: "
-                    << validator.getErrors();
+                    << _validatorPtr->getErrors();
     }
 }
 
 QStringList SubtitleBlockEditor::getFormatterFields() const
 {
-    if( _block.hasFormatLine() )
-    {
-        qCritical() << "SubtitleBlockEditor: trying to get format line from block without it";
-        throw FormatterRowNotFoundException();
-    }
-
-    SubtitleRowPtr formatLine = _block.getFormatLine();
-    return formatLine->getValues();
+    return _block.getFormatLine()->getValues();
 }
 
 void SubtitleBlockEditor::initFormatIndexes()
@@ -54,13 +47,13 @@ qsizetype SubtitleBlockEditor::getColumnIndex(const QString &columnName) const
 void SubtitleBlockEditor::updateAllValuesForField(
     const QString &fieldName, std::function<QString (const QString&)> updater)
 {
+    auto dataLines = _block.getDataLines();
     qsizetype columnIndex = getColumnIndex( fieldName );
-    for( auto lineIt = _block.lines.begin(); lineIt != _block.lines.end(); ++lineIt )
+    for( auto line: dataLines )
     {
-        const QString &elementToUpdate = (*lineIt)->getValues().at( columnIndex );
-
+        const QString &elementToUpdate = line->getValues().at( columnIndex );
         QString updatedValue = updater( elementToUpdate );
 
-        (*lineIt)->setValue( columnIndex, updatedValue );
+        line->setValue( columnIndex, updatedValue );
     }
 }

@@ -11,10 +11,28 @@
 #include "string_helper.h"
 #include "reader/subtitle_block_reader.h"
 
-class SubtitleDataSerializer
+class ISubtitleDataSerializer
 {
 public:
-    static SubtitleData readFromFile(QFile &file)
+    virtual ~ISubtitleDataSerializer() = default;
+    virtual SubtitleData readFromFile( QFile &file ) const = 0;
+    virtual void saveToFile(QFile &file, const SubtitleData &data, const QString &codecName, bool codecHasBom) const = 0;
+};
+
+typedef QSharedPointer<ISubtitleDataSerializer> SubtitleDataSerializerPtr;
+
+class SubtitleDataSerializer: public ISubtitleDataSerializer
+{   
+public:
+    SubtitleDataSerializer(SubtitleBlockReaderPtr blockReader)
+        : _blockReader( blockReader )
+    { }
+
+    SubtitleDataSerializer()
+        : SubtitleDataSerializer( QSharedPointer<SubtitleBlockReader>::create() )
+    { }
+
+    SubtitleData readFromFile(QFile &file) const override
     {
         SubtitleData subData;
 
@@ -34,7 +52,7 @@ public:
             {
                 // process lines of data into block
                 // push new header into new lines
-                subData.blocks.append( SubtitleBlockReader::readBlock( blockData ) );
+                subData.blocks.append( _blockReader->readBlock( blockData ) );
 
                 blockData.clear();
                 blockData.append( line );
@@ -50,14 +68,14 @@ public:
                 blockData.append( line );
             }
         }
-        subData.blocks.append( SubtitleBlockReader::readBlock( blockData ) );
+        subData.blocks.append( _blockReader->readBlock( blockData ) );
 
         file.close();
 
         return subData;
     }
 
-    static void saveToFile(QFile &file, const SubtitleData &data, const QString &codecName, bool codecHasBom)
+    void saveToFile(QFile &file, const SubtitleData &data, const QString &codecName, bool codecHasBom) const override
     {
         if( !file.open( QIODevice::WriteOnly | QFile::Text ) )
         {
@@ -74,6 +92,9 @@ public:
 
         file.close();
     }
+
+private:
+    SubtitleBlockReaderPtr _blockReader;
 };
 
 

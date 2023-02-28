@@ -8,38 +8,42 @@
 #include "reader/subtitle_block.h"
 #include "subtitle_block_rule.h"
 
-typedef QSharedPointer<AbstractSubtitleBlockValidationRule> RulePtr;
 
-class AbstractSubtitleValidator
+class ISubtitleBlockValidator
 {
 public:
-    virtual ~AbstractSubtitleValidator() { }
-    virtual bool validate() = 0;
-    virtual void setRules(const QList<RulePtr>&) = 0;
-    virtual void addRules(const QList<RulePtr>&) = 0;
+    virtual ~ISubtitleBlockValidator() { }
+    virtual bool validate(const SubtitleBlock &block) = 0;
+    virtual void setRules(const QList<RuleConstPtr>&) = 0;
+    virtual void addRules(const QList<RuleConstPtr>&) = 0;
 
     virtual const QStringList &getErrors() const = 0;
 };
 
-class SubtitleBlockValidator: public AbstractSubtitleValidator
+typedef QSharedPointer<ISubtitleBlockValidator> ValidatorPtr;
+typedef QSharedPointer<const ISubtitleBlockValidator> ValidatorConstPtr;
+
+
+class SubtitleBlockValidator: public ISubtitleBlockValidator
 {
 public:
+    SubtitleBlockValidator(const QList< RuleConstPtr > &rules)
+        : _rules( rules )
+    { }
+
     SubtitleBlockValidator()
+        : SubtitleBlockValidator( { RulePtr( new HasHeaderRule() ),
+                                    RulePtr( new HasOneFormatRowRule() ),
+                                    RulePtr( new ColumnsCountEqualRule() ) } )
     { }
 
-    SubtitleBlockValidator(const SubtitleBlock &block)
-        :_rules{ RulePtr( new HasHeaderRule        ( block ) ),
-                 RulePtr( new HasFormatRowRule     ( block ) ),
-                 RulePtr( new ColumnsCountEqualRule( block ) ) }
-    { }
-
-    bool validate() override
+    bool validate(const SubtitleBlock &block) override
     {
         _errors.clear();
 
         for( const auto &rule: _rules )
         {
-            if( !rule->validate() )
+            if( !rule->validate( block ) )
             {
                 _errors << rule->getError();
             }
@@ -48,12 +52,12 @@ public:
         return _errors.isEmpty();
     }
 
-    void setRules(const QList<RulePtr> &rules) override
+    void setRules(const QList<RuleConstPtr> &rules) override
     {
         _rules = rules;
     }
 
-    void addRules(const QList<RulePtr> &rules) override
+    void addRules(const QList<RuleConstPtr> &rules) override
     {
         _rules << rules;
     }
@@ -65,7 +69,7 @@ public:
 
 
 private:
-    QList< RulePtr > _rules;
+    QList< RuleConstPtr > _rules;
     QStringList _errors;
 };
 

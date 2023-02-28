@@ -16,18 +16,12 @@
 class SubtitleBlock
 {
 public:
-    bool hasFormatLine() const
+    enum BlockType: int
     {
-        for( const auto &line: lines )
-        {
-            if( line->getDataType() == SubtitleRow::Formatter )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+        STYLE_BLOCK  = 0,
+        EVENTS_BLOCK = 1,
+        OTHER_BLOCK = 2,
+    };
 
     SubtitleRowPtr getFormatLine()
     {
@@ -95,6 +89,7 @@ public:
 
     QString name;
     QList< SubtitleRowPtr > lines;
+    BlockType blockType = OTHER_BLOCK;
 };
 
 

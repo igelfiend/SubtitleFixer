@@ -4,6 +4,7 @@
 #include <QString>
 
 #include "settings.h"
+#include "reader/subtitle_data_serializer.h"
 
 
 /**
@@ -14,7 +15,8 @@
 class SubtitlesFixer
 {
 public:
-    explicit SubtitlesFixer();
+    SubtitlesFixer( SubtitleDataSerializerPtr serializer );
+    SubtitlesFixer();
 
     void setSettings( const Settings &settings );
 
@@ -31,6 +33,7 @@ public:
 private:
     Settings _settings;
     QString _error;
+    SubtitleDataSerializerPtr _serializer;
 };
 
 #endif // SUBTITLES_FIXER_H
